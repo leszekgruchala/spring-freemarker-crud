@@ -1,0 +1,62 @@
+.prettyprint {
+    padding: .7em;
+    background-color: #f7f7f9;
+    border: 1px solid #e1e1e8;
+    width: 40em;
+}
+
+.prettyprint label {
+    width: 35em;
+}
+
+.person-row {
+    padding: .7em;
+}
+
+.person-row form {
+    margin-top: .7em;
+}
+
+.prettyprint li.person-row:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+#mainForm {
+    margin-bottom: 2em;
+}
+
+.container li {
+    list-style: none;
+}
+
+.container .error {
+    font-weight: normal;
+    color: red;
+}
+
+.container .input-prepend .add-on {
+    width: 4em;
+    text-align: right;
+}
+
+.container ul li i {
+    cursor: pointer;
+    margin-left: .4em;
+}
+
+form .submit {
+    margin-left: 1em;
+}
+
+form .submitRight {
+    margin-left: 19em;
+}
+
+form .cancel {
+    margin-left: 13em;
+}
+
+.force-middle {
+    display: table-cell;
+    vertical-align: middle;
+}
