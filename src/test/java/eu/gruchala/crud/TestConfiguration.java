@@ -1,5 +1,9 @@
 package eu.gruchala.crud;
 
+import eu.gruchala.crud.model.Person;
+import eu.gruchala.crud.utils.HashProvider;
+import eu.gruchala.crud.utils.Sha256Hasher;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,5 +19,10 @@ public class TestConfiguration {
     @Bean
     public Validator validator() {
         return new LocalValidatorFactoryBean();
+    }
+
+    @Bean
+    public HashProvider<Person> getHasher() {
+        return new Sha256Hasher();
     }
 }

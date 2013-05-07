@@ -13,5 +13,5 @@ public interface Persons {
 
     void update(Person person);
 
-    void delete(long personId);
+    void delete(String hash);
 }

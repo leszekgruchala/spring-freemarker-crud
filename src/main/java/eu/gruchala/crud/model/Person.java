@@ -21,7 +21,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "PEOPLE")
-@SuppressWarnings("unused")
 public class Person implements Serializable {
 
     private static final long serialVersionUID = -172412219240754562L;
@@ -37,6 +36,16 @@ public class Person implements Serializable {
     @Email(message = "Please provide valid email address.")
     @NotEmpty(message = "Email cannot be empty")
     private String email;
+    private String hash;
+
+    public Person() {}
+
+    public Person(final String name, final Date birthDate, final String email, final String hash) {
+        this.name = name;
+        this.birthDate = birthDate;
+        this.email = email;
+        this.hash = hash;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,6 +81,14 @@ public class Person implements Serializable {
         this.email = email;
     }
 
+    public void setHash(final String hash) {
+        this.hash = hash;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
     @Transient
     public String getFormattedBirthDate() {
         final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -80,12 +97,12 @@ public class Person implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Person");
-        sb.append("{id=").append(id);
+        final StringBuilder sb = new StringBuilder("Person{");
+        sb.append("id=").append(id);
         sb.append(", name='").append(name).append('\'');
         sb.append(", birthDate=").append(birthDate);
         sb.append(", email='").append(email).append('\'');
+        sb.append(", hash='").append(hash).append('\'');
         sb.append('}');
         return sb.toString();
     }

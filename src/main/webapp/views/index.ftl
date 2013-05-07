@@ -7,9 +7,6 @@
     <link href="resources/css/bootstrap.css" rel="stylesheet">
     <link href="resources/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="resources/css/style.css" rel="stylesheet">
-    <script src="resources/js/bootstrap.min.js"></script>
-    <script src="resources/js/jquery-1.8.2.min.js"></script>
-    <script src="resources/js/code.js"></script>
 </head>
 <body>
 <div class="container">
@@ -26,7 +23,7 @@
             <li class="person-row">
                 <label class="force-middle">${persona.name} / ${persona.formattedBirthDate} / ${persona.email}</label>
                 <div class="force-middle">
-                    <input type="hidden" class="personId" value="${persona.id}">
+                    <input type="hidden" class="personHash" value="${persona.hash}">
                     <input type="hidden" class="personName" value="${persona.name}">
                     <input type="hidden" class="personBirthDate" value="${persona.formattedBirthDate}">
                     <input type="hidden" class="personEmail" value="${persona.email}">
@@ -46,5 +43,8 @@
         </form>
     </ul>
 </div>
+<script src="resources/js/bootstrap.min.js"></script>
+<script src="resources/js/jquery-1.8.2.min.js"></script>
+<script src="resources/js/code.js"></script>
 </body>
 </html>

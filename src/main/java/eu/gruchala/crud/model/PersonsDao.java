@@ -4,28 +4,39 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import eu.gruchala.crud.utils.HashProvider;
+
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@SuppressWarnings("unused")
 public class PersonsDao implements Persons {
 
     private final SessionFactory sessionFactory;
+    private final HashProvider<Person> hasher;
 
     @Inject
-    public PersonsDao(final SessionFactory sessionFactory) {
+    public PersonsDao(final SessionFactory sessionFactory, final HashProvider<Person> hasher) {
         this.sessionFactory = sessionFactory;
+        this.hasher = hasher;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<Person> getAll() {
-        return getCurrentSession().createQuery("from eu.gruchala.crud.model.Person").list();
+        final Session currentSession = getCurrentSession();
+        final Query query = currentSession.createQuery("select new Person(name, birthDate, email, hash) from Person");
+        return query.list();
     }
 
     @Override
     public void create(final Person person) {
+        person.setHash(hasher.get(person));
         getCurrentSession().persist(person);
     }
 
@@ -35,9 +46,11 @@ public class PersonsDao implements Persons {
     }
 
     @Override
-    public void delete(final long personId) {
-        final Object object = getCurrentSession().get(Person.class, personId);
-        getCurrentSession().delete(object);
+    public void delete(final String hash) {
+        final Session currentSession = getCurrentSession();
+        final Criteria criteria = currentSession.createCriteria(Person.class);
+        criteria.add(Restrictions.eq("hash", hash));
+        currentSession.delete(criteria.uniqueResult());
     }
 
     private Session getCurrentSession() {

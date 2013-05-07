@@ -76,7 +76,7 @@ public class MainController {
             L.warn("Found errors.\n" + result.getAllErrors());
             final ModelAndView view = new ModelAndView("index");
             view.addObject("editablePerson", person);
-            view.addObject("currentlyEditedPerson", person.getId());
+            view.addObject("currentlyEditedPerson", person.getHash());
             return view;
         }
         personsDao.update(person);
@@ -84,10 +84,10 @@ public class MainController {
         return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping(value = "/removePerson/{personId}", method = RequestMethod.POST)
-    public ModelAndView removePerson(@PathVariable("personId") final String personId) {
-        personsDao.delete(Long.valueOf(personId));
-        L.debug("Attempting to remove person with ID: {}", personId);
+    @RequestMapping(value = "/removePerson/{hash}", method = RequestMethod.POST)
+    public ModelAndView removePerson(@PathVariable("hash") final String hash) {
+        personsDao.delete(hash);
+        L.debug("Attempting to remove person with hash: {}", hash);
         return new ModelAndView("redirect:/");
     }
 

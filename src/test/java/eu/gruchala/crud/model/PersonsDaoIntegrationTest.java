@@ -5,7 +5,10 @@ import java.util.Date;
 import java.util.List;
 
 import eu.gruchala.crud.TestConfiguration;
+import eu.gruchala.crud.utils.HashProvider;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -13,6 +16,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.fest.assertions.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {TestConfiguration.class})
 public class PersonsDaoIntegrationTest extends AbstractTransactionalTestNGSpringContextTests {
@@ -60,14 +64,17 @@ public class PersonsDaoIntegrationTest extends AbstractTransactionalTestNGSpring
 
         //then
         assertThat(people).isNotNull().isNotEmpty();
-        assertThat(people.get(0)).isNotNull().isEqualTo(person);
+        assertThat(people.get(0)).isNotNull();
+        assertThat(people.get(0).getName()).isEqualTo(person.getName());
+        assertThat(people.get(0).getId()).isNull();
     }
 
     @Test(dependsOnMethods = "shouldAddPerson")
     public void shouldEditPerson() throws Exception {
         //given
         personsDao.create(person);
-        person.setName("Grzegorz Brzeczyszczykiewicz");
+        final String newName = "Grzegorz Brzeczyszczykiewicz";
+        person.setName(newName);
 
         //when
         personsDao.update(person);
@@ -75,19 +82,43 @@ public class PersonsDaoIntegrationTest extends AbstractTransactionalTestNGSpring
         //then
         final List<Person> people = personsDao.getAll();
         assertThat(people).isNotNull().isNotEmpty();
-        assertThat(people.get(0)).isNotNull().isEqualTo(person);
+        final Person actualPerson = people.get(0);
+        assertThat(actualPerson).isNotNull();
+        assertThat(actualPerson.getName()).isEqualTo(newName);
     }
 
     @Test(dependsOnMethods = "shouldAddPerson")
-    public void shouldRemovePerson() throws Exception {
+    public void shouldDeletePerson() throws Exception {
         //given
         personsDao.create(person);
+        final String hash = personsDao.getAll().get(0).getHash();
 
         //when
-        personsDao.delete(person.getId());
+        personsDao.delete(hash);
 
         //then
         final List<Person> people = personsDao.getAll();
         assertThat(people).isNotNull().isEmpty();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldProduceHashForNewPerson() throws Exception {
+        //given
+        final SessionFactory sessionFactory = mock(SessionFactory.class);
+        final HashProvider<Person> hashProvider = mock(HashProvider.class);
+        final PersonsDao dao = new PersonsDao(sessionFactory, hashProvider);
+        final Session session = mock(Session.class);
+        final Person mockedPerson = mock(Person.class);
+        when(hashProvider.get(mockedPerson)).thenReturn("asd");
+        when(sessionFactory.getCurrentSession()).thenReturn(session);
+
+        //when
+        dao.create(mockedPerson);
+
+        //then
+        verify(hashProvider, times(1)).get(mockedPerson);
+        verify(sessionFactory, times(1)).getCurrentSession();
+        verify(session, times(1)).persist(mockedPerson);
     }
 }

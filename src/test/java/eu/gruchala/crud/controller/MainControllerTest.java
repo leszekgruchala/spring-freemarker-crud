@@ -124,14 +124,15 @@ public class MainControllerTest {
 
     @Test
     public void shouldRemovePerson() throws Exception {
-        //given
-        final String personId = "1";
+        //given valid hash
+        personsDao.create(person);
+        final String hash = "ABD123";
 
         //when
-        final ModelAndView page = mainController.removePerson(personId);
+        final ModelAndView page = mainController.removePerson(hash);
 
         //then
-        verify(personsDao, times(1)).delete(1);
+        verify(personsDao, times(1)).delete(hash);
         assertThat(page).isNotNull();
         assertThat(page.isEmpty()).isFalse();
         assertThat(page.getViewName()).isEqualTo("redirect:/");

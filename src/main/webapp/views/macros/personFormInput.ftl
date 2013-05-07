@@ -1,6 +1,6 @@
 <#macro personFormInput bean withCancel=false>
-    <#assign id>${bean}.id</#assign>
-    <@spring.formHiddenInput path=id/>
+    <#assign hash>${bean}.hash</#assign>
+    <@spring.formHiddenInput path=hash/>
     <ul>
         <li>
             <div class="input-prepend">

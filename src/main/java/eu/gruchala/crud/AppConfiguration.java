@@ -3,6 +3,10 @@ package eu.gruchala.crud;
 import java.util.Map;
 import java.util.Properties;
 
+import eu.gruchala.crud.model.Person;
+import eu.gruchala.crud.utils.HashProvider;
+import eu.gruchala.crud.utils.Sha256Hasher;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -52,5 +56,10 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
         variables.put("xml_escape", new XmlEscape());
         freeMarkerConfigurer.setFreemarkerVariables(variables);
         return freeMarkerConfigurer;
+    }
+
+    @Bean
+    public HashProvider<Person> getHasher() {
+        return new Sha256Hasher();
     }
 }

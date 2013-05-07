@@ -1,19 +1,19 @@
 $(function () {
     $(".icon-edit").click(function () {
-        if (currentlyEditedPerson() == getChosenPersonId(this) && $("#editablePersonFrom").length) {
+        if (currentlyEditedPerson() == getChosenPersonHash(this) && $("#editablePersonFrom").length) {
             return false;
         }
         editPerson(this);
     });
     $(".icon-remove").click(function () {
-        removePerson(getChosenPersonId(this))
+        removePerson(getChosenPersonHash(this))
     });
 
     $(".cancel").click(function () {
         removeEditablePerson();
     });
 
-    $('.personId').each(function (index) {
+    $('.personHash').each(function (index) {
         if (currentlyEditedPerson() == $(this).val()) {
             $(this).parent().children(".icon-edit").click();
             return false;
@@ -24,8 +24,6 @@ $(function () {
 function invokeForm(e) {
     if (e.keyCode == 13) {
         $(e.target).parent().submit();
-//        var form = document.getElementById("mainForm");
-//        form.submit();
     }
 }
 
@@ -36,15 +34,17 @@ function editPerson(source) {
     newForm.removeAttr('id').attr('id', "editablePersonFrom").removeClass('hide');
     $(source).parent().parent().append(newForm);
 
-    if (currentlyEditedPerson() == '' || currentlyEditedPerson() != getChosenPersonId(source)) {
+    var currentlyEditedPerson2 = currentlyEditedPerson();
+    var chosenPersonHash = getChosenPersonHash(source);
+    if (currentlyEditedPerson2 == '' || currentlyEditedPerson2 != chosenPersonHash) {
         $("#editablePersonFrom .error").remove();
-        $("#editablePersonFrom input[name$=id]").val(getChosenPersonId(source));
+        $("#editablePersonFrom input[name$=id]").val(chosenPersonHash);
         $("#editablePersonFrom input[name$=name]").val(getChosenPersonName(source));
         $("#editablePersonFrom input[name$=birthDate]").val(getChosenPersonBirthDate(source));
         $("#editablePersonFrom input[name$=email]").val(getChosenPersonEmail(source));
     }
 
-    setCurrentlyEditedPerson(getChosenPersonId(source));
+    setCurrentlyEditedPerson(chosenPersonHash);
 
     $(source).parent().next(".editPerson").show("slow");
 }
@@ -63,8 +63,8 @@ function setCurrentlyEditedPerson(value) {
     $("#currentlyEditedPerson").val(value);
 }
 
-function getChosenPersonId(elem) {
-    return $(elem).parent().children(".personId").val()
+function getChosenPersonHash(elem) {
+    return $(elem).parent().children(".personHash").val()
 }
 
 function getChosenPersonName(elem) {
