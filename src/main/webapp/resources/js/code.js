@@ -1,84 +1,106 @@
-$(function () {
-    $(".icon-edit").click(function () {
-        if (currentlyEditedPerson() == getChosenPersonHash(this) && $("#editablePersonFrom").length) {
-            return false;
-        }
-        editPerson(this);
-    });
-    $(".icon-remove").click(function () {
-        removePerson(getChosenPersonHash(this))
-    });
+var crud = new (function() {
+    //assign _root and config private variables
+    var _root = this;
+    var _cfg = {}
 
-    $(".cancel").click(function () {
-        removeEditablePerson();
-    });
-
-    $('.personHash').each(function (index) {
-        if (currentlyEditedPerson() == $(this).val()) {
-            $(this).parent().children(".icon-edit").click();
-            return false;
-        }
-    });
-});
-
-function invokeForm(e) {
-    if (e.keyCode == 13) {
-        $(e.target).parent().submit();
+    /*
+     INITIALIZE
+     */
+    this.init = function(opts) {
+        _cfg = $.extend(_cfg, opts);
+        //bind events on init
+        $(document).ready(function() {
+            //bind events
+            _bindEvents();
+        });
     }
-}
+    /*
+     Bind Events
+     */
+    var _bindEvents = function() {
+        $(".icon-edit").click(function() {
+            if (_currentlyEditedPerson() == _getChosenPersonHash(this) && $('#editablePersonFrom').length) {
+                return false;
+            }
+            editPerson(this);
+        });
+        $('.icon-remove').click(function() {
+            _removePerson(_getChosenPersonHash(this))
+        });
 
-function editPerson(source) {
-    removeEditablePerson();
+        $('.cancel').click(function() {
+            _removeEditablePerson();
+        });
 
-    var newForm = $("#editPersonFrom").clone(true);
-    newForm.removeAttr('id').attr('id', "editablePersonFrom").removeClass('hide');
-    $(source).parent().parent().append(newForm);
+        $('.personHash').each(function() {
+            if (_currentlyEditedPerson() == $(this).val()) {
+                $(this).parent().find('.icon-edit').click();
+                return false;
+            }
+        });
 
-    var currentlyEditedPerson2 = currentlyEditedPerson();
-    var chosenPersonHash = getChosenPersonHash(source);
-    if (currentlyEditedPerson2 == '' || currentlyEditedPerson2 != chosenPersonHash) {
-        $("#editablePersonFrom .error").remove();
-        $("#editablePersonFrom input[name$=id]").val(chosenPersonHash);
-        $("#editablePersonFrom input[name$=name]").val(getChosenPersonName(source));
-        $("#editablePersonFrom input[name$=birthDate]").val(getChosenPersonBirthDate(source));
-        $("#editablePersonFrom input[name$=email]").val(getChosenPersonEmail(source));
+        $('body').on('click', 'input', function(e){
+            if (e.keyCode == 13) {
+                $(e.target).parent().submit();
+            }
+        });
+    }
+    /*
+     Some Private Method (no "this")
+     */
+    var editPerson = function(source) {
+        _removeEditablePerson();
+
+        var newForm = $('#editPersonFrom').clone(true);
+        newForm.removeAttr('id').attr('id', "editablePersonFrom").removeClass('hide');
+        $(source).parent().parent().append(newForm);
+
+        var currentlyEditedPerson2 = _currentlyEditedPerson();
+        var chosenPersonHash = _getChosenPersonHash(source);
+        if (currentlyEditedPerson2 == '' || currentlyEditedPerson2 != chosenPersonHash) {
+            $('#editablePersonFrom').find('.error').remove();
+            $('#editablePersonFrom').find('input[name$=id]').val(chosenPersonHash);
+            $('#editablePersonFrom').find('input[name$=name]').val(_getChosenPersonName(source));
+            $('#editablePersonFrom').find('input[name$=birthDate]').val(_getChosenPersonBirthDate(source));
+            $('#editablePersonFrom').find('input[name$=email]').val(_getChosenPersonEmail(source));
+        }
+        _setCurrentlyEditedPerson(chosenPersonHash);
+        $(source).parent().next(".editPerson").show("slow");
     }
 
-    setCurrentlyEditedPerson(chosenPersonHash);
+    var _removePerson = function(selectedId) {
+        var form = document.forms["removePerson"];
+        form.action = form.action + selectedId;
+        form.submit();
+    }
 
-    $(source).parent().next(".editPerson").show("slow");
-}
+    var _currentlyEditedPerson = function() {
+        return $("#currentlyEditedPerson").val();
+    }
 
-function removePerson(selectedId) {
-    var form = document.forms["removePerson"];
-    form.action = form.action + selectedId;
-    form.submit();
-}
+    var _setCurrentlyEditedPerson = function(value) {
+        $("#currentlyEditedPerson").val(value);
+    }
 
-function currentlyEditedPerson() {
-    return $("#currentlyEditedPerson").val();
-}
+    var _getChosenPersonHash = function(elem) {
+        return $(elem).parent().find('.personHash').val()
+    }
 
-function setCurrentlyEditedPerson(value) {
-    $("#currentlyEditedPerson").val(value);
-}
+    var _getChosenPersonName = function(elem) {
+        return $(elem).parent().find('.personName').val()
+    }
 
-function getChosenPersonHash(elem) {
-    return $(elem).parent().children(".personHash").val()
-}
+    var _getChosenPersonBirthDate = function(elem) {
+        return $(elem).parent().find('.personBirthDate').val()
+    }
 
-function getChosenPersonName(elem) {
-    return $(elem).parent().children(".personName").val()
-}
+    var _getChosenPersonEmail = function(elem) {
+        return $(elem).parent().find('.personEmail').val()
+    }
 
-function getChosenPersonBirthDate(elem) {
-    return $(elem).parent().children(".personBirthDate").val()
-}
+    var _removeEditablePerson = function() {
+        $('#editablePersonFrom').hide("slow").remove();
+    }
+})();
 
-function getChosenPersonEmail(elem) {
-    return $(elem).parent().children(".personEmail").val()
-}
-
-function removeEditablePerson() {
-    $("#editablePersonFrom").hide("slow").remove();
-}
+crud.init();
