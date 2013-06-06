@@ -1,6 +1,7 @@
-##### Spring CRUD is sample Create, Update, Delete application build with Spring 3.1 with completely no XML configuration.
+##### Spring CRUD is sample Create, Read, Update, Delete application build with Spring 3.2 with completely no XML configuration.
 
 It uses Freemarker, Twitter Bootstrap, JQuery, Hibernate, embedded HSQLDB, Logback, TestNG, FEST matchers, Mockito and Maven.
+Shows how to wire Spring with Java Config Hibernate, Validators, Freemarker and other stuff.
 
 There are three scripts:
 
@@ -10,4 +11,4 @@ There are three scripts:
 
 Make sure you have execution rights and click this link [http://localhost:8080/crud](http://localhost:8080/crud)
 
-What next? Maybe asynchronous servlets with Spring 3.2...
+License: Copy it and use as you like :-)

@@ -1,7 +1,7 @@
 package eu.gruchala.crud;
 
-import java.util.Map;
-import java.util.Properties;
+import java.io.IOException;
+import java.util.HashMap;
 
 import eu.gruchala.crud.model.Person;
 import eu.gruchala.crud.utils.HashProvider;
@@ -19,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
+import freemarker.template.TemplateException;
 import freemarker.template.utility.XmlEscape;
 
 @Configuration
@@ -45,16 +46,20 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public FreeMarkerConfigurer freemarkerConfig() {
+    public FreeMarkerConfigurer freemarkerConfig() throws TemplateException, IOException {
         final FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
         freeMarkerConfigurer.setTemplateLoaderPath(TEMPLATE_LOADER_PATH);
-        if (L.isDebugEnabled()) L.debug("Looking for ftl views at: " + TEMPLATE_LOADER_PATH);
-        final Properties settings = new Properties();
-        settings.setProperty("number_format", "0.######");
-        freeMarkerConfigurer.setFreemarkerSettings(settings);
-        final Map<String, Object> variables = new java.util.HashMap<String, Object>();
+//        freeMarkerConfigurer.setFreemarkerVariables();
+        final HashMap<String, Object> variables = new HashMap<String, Object>();
         variables.put("xml_escape", new XmlEscape());
+        variables.put("number_format", "0.######");
         freeMarkerConfigurer.setFreemarkerVariables(variables);
+                final freemarker.template.Configuration configuration = freeMarkerConfigurer.createConfiguration();
+//                configuration.setSetting("number_format", "0.######");
+                configuration.setNumberFormat("0.######");
+                if (L.isDebugEnabled()) L.debug("Looking for ftl views at: " + TEMPLATE_LOADER_PATH);
+//                configuration.setSharedVariable("xml_escape", new XmlEscape());
+//                freeMarkerConfigurer.setConfiguration(configuration);
         return freeMarkerConfigurer;
     }
 

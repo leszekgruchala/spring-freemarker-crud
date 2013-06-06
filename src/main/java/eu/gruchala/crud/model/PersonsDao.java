@@ -42,15 +42,23 @@ public class PersonsDao implements Persons {
 
     @Override
     public void update(final Person person) {
-        getCurrentSession().update(person);
+        final Session currentSession = getCurrentSession();
+        final Person oldPerson = getByHash(person.getHash(), currentSession);
+        person.setId(oldPerson.getId());
+        currentSession.merge(person);
     }
 
     @Override
     public void delete(final String hash) {
         final Session currentSession = getCurrentSession();
+        final Person person = getByHash(hash, currentSession);
+        currentSession.delete(person);
+    }
+
+    private Person getByHash(final String hash, final Session currentSession) {
         final Criteria criteria = currentSession.createCriteria(Person.class);
         criteria.add(Restrictions.eq("hash", hash));
-        currentSession.delete(criteria.uniqueResult());
+        return (Person) criteria.uniqueResult();
     }
 
     private Session getCurrentSession() {

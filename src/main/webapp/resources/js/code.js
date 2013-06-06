@@ -18,88 +18,72 @@ var crud = new (function() {
      Bind Events
      */
     var _bindEvents = function() {
+        var $body = $('body');
+        var $modal = $('.modal');
         $(".icon-edit").click(function() {
-            if (_currentlyEditedPerson() == _getChosenPersonHash(this) && $('#editablePersonFrom').length) {
-                return false;
-            }
-            editPerson(this);
+            copyValuesForChange(this);
+            $modal.modal('show');
         });
         $('.icon-remove').click(function() {
             _removePerson(_getChosenPersonHash(this))
         });
-
-        $('.cancel').click(function() {
-            _removeEditablePerson();
-        });
-
-        $('.personHash').each(function() {
-            if (_currentlyEditedPerson() == $(this).val()) {
-                $(this).parent().find('.icon-edit').click();
-                return false;
-            }
-        });
-
-        $('body').on('click', 'input', function(e){
+        $body.on('click', 'input', function(e){
             if (e.keyCode == 13) {
                 $(e.target).parent().submit();
             }
         });
-    }
-    /*
-     Some Private Method (no "this")
-     */
-    var editPerson = function(source) {
-        _removeEditablePerson();
 
-        var newForm = $('#editPersonFrom').clone(true);
-        newForm.removeAttr('id').attr('id', "editablePersonFrom").removeClass('hide');
-        $(source).parent().parent().append(newForm);
-
-        var currentlyEditedPerson2 = _currentlyEditedPerson();
-        var chosenPersonHash = _getChosenPersonHash(source);
-        if (currentlyEditedPerson2 == '' || currentlyEditedPerson2 != chosenPersonHash) {
-            $('#editablePersonFrom').find('.error').remove();
-            $('#editablePersonFrom').find('input[name$=id]').val(chosenPersonHash);
-            $('#editablePersonFrom').find('input[name$=name]').val(_getChosenPersonName(source));
-            $('#editablePersonFrom').find('input[name$=birthDate]').val(_getChosenPersonBirthDate(source));
-            $('#editablePersonFrom').find('input[name$=email]').val(_getChosenPersonEmail(source));
+        $modal.on('hidden', function() {
+            $('#editWithErrors').val("false")
+            _setValuesOnChangeForm("", "", "", "");
+        });
+        $body.on('click', '.modal .modal-footer .btn-primary', function() {
+            var form = document.forms["editPersonFrom"];
+            form.submit();
+        });
+        if ($('#editWithErrors').val() == "true") {
+            $modal.modal('show');
         }
-        _setCurrentlyEditedPerson(chosenPersonHash);
-        $(source).parent().next(".editPerson").show("slow");
+    }
+
+    var copyValuesForChange = function(source) {
+        var hash = _getChosenPersonHash(source);
+        var name = _getChosenPersonName(source);
+        var birthday = _getChosenPersonBirthDate(source);
+        var email = _getChosenPersonEmail(source);
+        _setValuesOnChangeForm(hash, name, birthday, email);
+    }
+
+    var _setValuesOnChangeForm = function(hash, name, birthdate, email) {
+        var form = $('#editPersonFrom');
+        if ($('#editWithErrors').val() != "true") {
+            form.find('.error:first').parent().remove();
+        }
+        form.find('input[name="hash"]').val(hash);
+        form.find('input[name="name"]').val(name);
+        form.find('input[name="birthDate"]').val(birthdate);
+        form.find('input[name="email"]').val(email);
     }
 
     var _removePerson = function(selectedId) {
-        var form = document.forms["removePerson"];
-        form.action = form.action + selectedId;
-        form.submit();
-    }
-
-    var _currentlyEditedPerson = function() {
-        return $("#currentlyEditedPerson").val();
-    }
-
-    var _setCurrentlyEditedPerson = function(value) {
-        $("#currentlyEditedPerson").val(value);
+        var action="removePerson/" + selectedId;
+        $('<form action="'+ action +'" method="POST"></form>').appendTo('body').submit();
     }
 
     var _getChosenPersonHash = function(elem) {
-        return $(elem).parent().find('.personHash').val()
+        return $(elem).closest('.person-data').find('.personHash').val()
     }
 
     var _getChosenPersonName = function(elem) {
-        return $(elem).parent().find('.personName').val()
+        return $(elem).closest('.person-data').find('.personName').val()
     }
 
     var _getChosenPersonBirthDate = function(elem) {
-        return $(elem).parent().find('.personBirthDate').val()
+        return $(elem).closest('.person-data').find('.personBirthDate').val()
     }
 
     var _getChosenPersonEmail = function(elem) {
-        return $(elem).parent().find('.personEmail').val()
-    }
-
-    var _removeEditablePerson = function() {
-        $('#editablePersonFrom').hide("slow").remove();
+        return $(elem).closest('.person-data').find('.personEmail').val()
     }
 })();
 

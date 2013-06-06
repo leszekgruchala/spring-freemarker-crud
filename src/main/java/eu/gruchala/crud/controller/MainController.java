@@ -61,9 +61,7 @@ public class MainController {
     public ModelAndView savePerson(@Validated @ModelAttribute("person") final Person person, final BindingResult result) {
         if (result.hasErrors()) {
             L.warn("Found errors.\n" + result.getAllErrors());
-            final ModelAndView view = new ModelAndView("index");
-            view.addObject("person", person);
-            return view;
+            return new ModelAndView("index");
         }
         personsDao.create(person);
         L.info("Added person: " + person);
@@ -75,8 +73,7 @@ public class MainController {
         if (result.hasErrors()) {
             L.warn("Found errors.\n" + result.getAllErrors());
             final ModelAndView view = new ModelAndView("index");
-            view.addObject("editablePerson", person);
-            view.addObject("currentlyEditedPerson", person.getHash());
+            view.addObject("editWithErrors", "true");
             return view;
         }
         personsDao.update(person);

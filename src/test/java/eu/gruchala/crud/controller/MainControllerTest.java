@@ -82,8 +82,6 @@ public class MainControllerTest {
         assertThat(page).isNotNull();
         assertThat(page.isEmpty()).isFalse();
         assertThat(page.getViewName()).isEqualTo("index");
-        assertThat(page.getModel().get("person")).isNotNull().isInstanceOf(Person.class);
-        assertThat(page.getModel().get("person")).isEqualsToByComparingFields(person);
         verifyZeroInteractions(personsDao);
     }
 
@@ -116,9 +114,7 @@ public class MainControllerTest {
         assertThat(page).isNotNull();
         assertThat(page.isEmpty()).isFalse();
         assertThat(page.getViewName()).isEqualTo("index");
-        assertThat(page.getModel().get("editablePerson")).isNotNull().isInstanceOf(Person.class);
-        assertThat(page.getModel().get("editablePerson")).isEqualsToByComparingFields(person);
-        assertThat(page.getModel().get("currentlyEditedPerson")).isEqualTo(1l);
+        assertThat(page.getModel().get("editWithErrors")).isEqualTo("true");
         verifyZeroInteractions(personsDao);
     }
 
