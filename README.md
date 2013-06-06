@@ -1,7 +1,7 @@
 ##### Spring CRUD is sample Create, Read, Update, Delete application build with Spring 3.2 with completely no XML configuration.
 
 It uses Freemarker, Twitter Bootstrap, JQuery, Hibernate, embedded HSQLDB, Logback, TestNG, FEST matchers, Mockito and Maven.
-Shows how to wire Spring with Java Config Hibernate, Validators, Freemarker and other stuff.
+Shows how to wire Spring through Java Config with Hibernate, Validators, Freemarker and other stuff.
 
 There are three scripts:
 

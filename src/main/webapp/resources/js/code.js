@@ -71,19 +71,23 @@ var crud = new (function() {
     }
 
     var _getChosenPersonHash = function(elem) {
-        return $(elem).closest('.person-data').find('.personHash').val()
+        return _getPersonDataBy(elem, '.personHash');
     }
 
     var _getChosenPersonName = function(elem) {
-        return $(elem).closest('.person-data').find('.personName').val()
+        return _getPersonDataBy(elem, '.personName');
     }
 
     var _getChosenPersonBirthDate = function(elem) {
-        return $(elem).closest('.person-data').find('.personBirthDate').val()
+        return _getPersonDataBy(elem, '.personBirthDate');
     }
 
     var _getChosenPersonEmail = function(elem) {
-        return $(elem).closest('.person-data').find('.personEmail').val()
+        return _getPersonDataBy(elem, '.personEmail');
+    }
+
+    var _getPersonDataBy = function(elem, selector) {
+        return $(elem).closest('.person-data').find(selector).val();
     }
 })();
 
