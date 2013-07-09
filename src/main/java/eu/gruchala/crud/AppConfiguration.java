@@ -49,17 +49,13 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
     public FreeMarkerConfigurer freemarkerConfig() throws TemplateException, IOException {
         final FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
         freeMarkerConfigurer.setTemplateLoaderPath(TEMPLATE_LOADER_PATH);
-//        freeMarkerConfigurer.setFreemarkerVariables();
         final HashMap<String, Object> variables = new HashMap<String, Object>();
         variables.put("xml_escape", new XmlEscape());
         variables.put("number_format", "0.######");
         freeMarkerConfigurer.setFreemarkerVariables(variables);
                 final freemarker.template.Configuration configuration = freeMarkerConfigurer.createConfiguration();
-//                configuration.setSetting("number_format", "0.######");
                 configuration.setNumberFormat("0.######");
                 if (L.isDebugEnabled()) L.debug("Looking for ftl views at: " + TEMPLATE_LOADER_PATH);
-//                configuration.setSharedVariable("xml_escape", new XmlEscape());
-//                freeMarkerConfigurer.setConfiguration(configuration);
         return freeMarkerConfigurer;
     }
 
